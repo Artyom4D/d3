@@ -1,5 +1,6 @@
 import "../core/document";
 import "../core/rebind";
+import "../core/vendor";
 import "../event/event";
 import "../event/mouse";
 import "../event/touches";
@@ -21,11 +22,15 @@ d3.behavior.drag = function() {
         touchId = d3.event.touches ? d3.event.changedTouches[0].identifier : null,
         offset,
         origin_ = point(),
-        moved = 0;
+        moved = 0,
+        style = d3_document.body.style,
+        userSelect = style[d3_vendor + "UserSelect"];
+    style[d3_vendor + "UserSelect"] = "none";
 
     var w = d3.select(d3_window)
         .on(touchId != null ? "touchmove.drag-" + touchId : "mousemove.drag", dragmove)
-        .on(touchId != null ? "touchend.drag-" + touchId : "mouseup.drag", dragend, true);
+        .on(touchId != null ? "touchend.drag-" + touchId : "mouseup.drag", dragend, true)
+        .on(touchId != null ? "selectstart.drag-" + touchId : "selectstart.drag", d3_eventCancel);
 
     if (origin) {
       offset = origin.apply(target, arguments);
@@ -34,8 +39,6 @@ d3.behavior.drag = function() {
       offset = [0, 0];
     }
 
-    // Only cancel mousedown; touchstart is needed for draggable links.
-    if (touchId == null) d3_eventCancel();
     event_({type: "dragstart"});
 
     function point() {
@@ -69,7 +72,9 @@ d3.behavior.drag = function() {
       }
 
       w .on(touchId != null ? "touchmove.drag-" + touchId : "mousemove.drag", null)
-        .on(touchId != null ? "touchend.drag-" + touchId : "mouseup.drag", null);
+        .on(touchId != null ? "touchend.drag-" + touchId : "mouseup.drag", null)
+        .on(touchId != null ? "selectstart.drag-" + touchId : "selectstart.drag", null);
+      style[d3_vendor + "UserSelect"] = userSelect;
     }
   }
 
