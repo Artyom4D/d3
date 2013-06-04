@@ -1,11 +1,11 @@
 import "../core/document";
 import "../core/rebind";
-import "../core/vendor";
 import "../event/event";
 import "../event/mouse";
 import "../event/touches";
 import "../selection/selection";
 import "behavior";
+import "select";
 
 d3.behavior.zoom = function() {
   var translate = [0, 0],
@@ -104,9 +104,7 @@ d3.behavior.zoom = function() {
         moved = 0,
         w = d3.select(d3_window).on("mousemove.zoom", mousemove).on("mouseup.zoom", mouseup).on("selectstart.zoom", d3_eventCancel),
         l = location(d3.mouse(target)),
-        style = d3_document.body.style,
-        userSelect = style[d3_vendor + "UserSelect"];
-    style[d3_vendor + "UserSelect"] = "none";
+        selectRevert = d3_behavior_select();
 
     function mousemove() {
       moved = 1;
@@ -117,7 +115,7 @@ d3.behavior.zoom = function() {
     function mouseup() {
       if (moved) d3_eventCancel();
       w.on("mousemove.zoom", null).on("mouseup.zoom", null).on("selectstart.zoom", null);
-      style[d3_vendor + "UserSelect"] = userSelect;
+      selectRevert();
       if (moved && d3.event.target === eventTarget) d3_eventSuppress(w, "click.zoom");
     }
   }

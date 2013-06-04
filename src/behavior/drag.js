@@ -1,10 +1,10 @@
 import "../core/document";
 import "../core/rebind";
-import "../core/vendor";
 import "../event/event";
 import "../event/mouse";
 import "../event/touches";
 import "behavior";
+import "select";
 
 d3.behavior.drag = function() {
   var event = d3_eventDispatch(drag, "drag", "dragstart", "dragend"),
@@ -23,9 +23,7 @@ d3.behavior.drag = function() {
         offset,
         origin_ = point(),
         moved = 0,
-        style = d3_document.body.style,
-        userSelect = style[d3_vendor + "UserSelect"];
-    style[d3_vendor + "UserSelect"] = "none";
+        selectRevert = d3_behavior_select();
 
     var w = d3.select(d3_window)
         .on(touchId != null ? "touchmove.drag-" + touchId : "mousemove.drag", dragmove)
@@ -74,7 +72,7 @@ d3.behavior.drag = function() {
       w .on(touchId != null ? "touchmove.drag-" + touchId : "mousemove.drag", null)
         .on(touchId != null ? "touchend.drag-" + touchId : "mouseup.drag", null)
         .on(touchId != null ? "selectstart.drag-" + touchId : "selectstart.drag", null);
-      style[d3_vendor + "UserSelect"] = userSelect;
+      selectRevert();
     }
   }
 
