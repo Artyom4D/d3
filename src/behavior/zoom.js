@@ -5,7 +5,7 @@ import "../event/mouse";
 import "../event/touches";
 import "../selection/selection";
 import "behavior";
-import "select";
+import "select-disable";
 
 d3.behavior.zoom = function() {
   var translate = [0, 0],
@@ -102,9 +102,9 @@ d3.behavior.zoom = function() {
         event_ = event.of(target, arguments),
         eventTarget = d3.event.target,
         moved = 0,
-        w = d3.select(d3_window).on("mousemove.zoom", mousemove).on("mouseup.zoom", mouseup).on("selectstart.zoom", d3_eventCancel),
+        w = d3.select(d3_window).on("mousemove.zoom", mousemove).on("mouseup.zoom", mouseup),
         l = location(d3.mouse(target)),
-        selectRevert = d3_behavior_select();
+        selectEnable = d3_behavior_selectDisable("zoom");
 
     function mousemove() {
       moved = 1;
@@ -114,8 +114,8 @@ d3.behavior.zoom = function() {
 
     function mouseup() {
       if (moved) d3_eventCancel();
-      w.on("mousemove.zoom", null).on("mouseup.zoom", null).on("selectstart.zoom", null);
-      selectRevert();
+      w.on("mousemove.zoom", null).on("mouseup.zoom", null);
+      selectEnable();
       if (moved && d3.event.target === eventTarget) d3_eventSuppress(w, "click.zoom");
     }
   }

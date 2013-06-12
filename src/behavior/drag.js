@@ -4,7 +4,7 @@ import "../event/event";
 import "../event/mouse";
 import "../event/touches";
 import "behavior";
-import "select";
+import "select-disable";
 
 d3.behavior.drag = function() {
   var event = d3_eventDispatch(drag, "drag", "dragstart", "dragend"),
@@ -23,12 +23,11 @@ d3.behavior.drag = function() {
         offset,
         origin_ = point(),
         moved = 0,
-        selectRevert = d3_behavior_select();
+        selectEnable = d3_behavior_selectDisable(touchId != null ? "drag-" + touchId : "drag");
 
     var w = d3.select(d3_window)
         .on(touchId != null ? "touchmove.drag-" + touchId : "mousemove.drag", dragmove)
-        .on(touchId != null ? "touchend.drag-" + touchId : "mouseup.drag", dragend, true)
-        .on(touchId != null ? "selectstart.drag-" + touchId : "selectstart.drag", d3_eventCancel);
+        .on(touchId != null ? "touchend.drag-" + touchId : "mouseup.drag", dragend, true);
 
     if (origin) {
       offset = origin.apply(target, arguments);
@@ -70,9 +69,8 @@ d3.behavior.drag = function() {
       }
 
       w .on(touchId != null ? "touchmove.drag-" + touchId : "mousemove.drag", null)
-        .on(touchId != null ? "touchend.drag-" + touchId : "mouseup.drag", null)
-        .on(touchId != null ? "selectstart.drag-" + touchId : "selectstart.drag", null);
-      selectRevert();
+        .on(touchId != null ? "touchend.drag-" + touchId : "mouseup.drag", null);
+      selectEnable();
     }
   }
 
