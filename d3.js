@@ -5,7 +5,7 @@ d3 = function() {
   if (!Date.now) Date.now = function() {
     return +new Date();
   };
-  var d3_document = document, d3_window = window;
+  var d3_document = document, d3_documentElement = d3_document.documentElement, d3_window = window;
   try {
     d3_document.createElement("div").style.setProperty("opacity", 0, "");
   } catch (error) {
@@ -480,7 +480,7 @@ d3 = function() {
     return Array.prototype.slice.call(pseudoarray);
   }
   try {
-    d3_array(d3_document.documentElement.childNodes)[0].nodeType;
+    d3_array(d3_documentElement.childNodes)[0].nodeType;
   } catch (e) {
     d3_array = d3_arrayCopy;
   }
@@ -498,7 +498,7 @@ d3 = function() {
     }) : [];
   };
   function d3_noop() {}
-  var d3_behavior_select = "MozUserSelect" in d3_document.documentElement.style ? function() {
+  var d3_behavior_select = "MozUserSelect" in d3_documentElement.style ? function() {
     var style = d3_document.body.style, select = style.MozUserSelect;
     style.MozUserSelect = "none";
     return function() {
@@ -564,7 +564,7 @@ d3 = function() {
     return d3.rebind(drag, event, "on");
   };
   var d3_vendor = function(p) {
-    var i = -1, n = p.length, s = d3_document.documentElement.style;
+    var i = -1, n = p.length, s = d3_documentElement.style;
     while (++i < n) if (p[i] + "Transform" in s) return p[i];
     return "";
   }([ "webkit", "ms", "Moz", "O" ]);
@@ -576,7 +576,7 @@ d3 = function() {
     return n.querySelector(s);
   }, d3_selectAll = function(s, n) {
     return n.querySelectorAll(s);
-  }, d3_selectRoot = d3_document.documentElement, d3_selectMatcher = d3_selectRoot.matchesSelector || d3_selectRoot[d3_vendor.toLowerCase() + "MatchesSelector"], d3_selectMatches = function(n, s) {
+  }, d3_selectMatcher = d3_documentElement.matchesSelector || d3_documentElement[d3_vendor.toLowerCase() + "MatchesSelector"], d3_selectMatches = function(n, s) {
     return d3_selectMatcher.call(n, s);
   };
   if (typeof Sizzle === "function") {
@@ -1119,15 +1119,15 @@ d3 = function() {
   };
   d3.select = function(node) {
     var group = [ typeof node === "string" ? d3_select(node, d3_document) : node ];
-    group.parentNode = d3_selectRoot;
+    group.parentNode = d3_documentElement;
     return d3_selection([ group ]);
   };
   d3.selectAll = function(nodes) {
     var group = d3_array(typeof nodes === "string" ? d3_selectAll(nodes, d3_document) : nodes);
-    group.parentNode = d3_selectRoot;
+    group.parentNode = d3_documentElement;
     return d3_selection([ group ]);
   };
-  var d3_selectionRoot = d3.select(d3_selectRoot);
+  var d3_selectionRoot = d3.select(d3_documentElement);
   d3.behavior.zoom = function() {
     var translate = [ 0, 0 ], translate0, scale = 1, scale0, scaleExtent = d3_behavior_zoomInfinity, event = d3_eventDispatch(zoom, "zoom"), x0, x1, y0, y1, touchtime;
     function zoom() {

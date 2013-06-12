@@ -1,7 +1,7 @@
 import "../core/document";
 import "../core/noop";
 
-var d3_behavior_select = "MozUserSelect" in d3_document.documentElement.style
+var d3_behavior_select = "MozUserSelect" in d3_documentElement.style
     ? function() {
       var style = d3_document.body.style,
           select = style.MozUserSelect;
